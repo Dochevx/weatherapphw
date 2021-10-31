@@ -1,38 +1,60 @@
 <form id="city_form" action="/weather" method="post">
-    <label for="city">Choose a city:</label>
-    <select name="city_name" id="city" form="city_form">
-        <option value="" selected disabled hidden>Choose city</option>
-        <option value="Blagoevgrad">Blagoevgrad</option>
-        <option value="Burgas">Burgas</option>
-        <option value="Dobrich">Dobrich</option>
-        <option value="Gabrovo">Gabrovo</option>
-        <option value="Haskovo">Haskovo</option>
-        <option value="Kardzhali">Kardzhali</option>
-        <option value="Kyustendil">Kyustendil</option>
-        <option value="Lovech">Lovech</option>
-        <option value="Montana">Montana</option>
-        <option value="Pazardzhik">Pazardzhik</option>
-        <option value="Pernik">Pernik</option>
-        <option value="Pleven">Pleven</option>
-        <option value="Plovdiv">Plovdiv</option>
-        <option value="Razgrad">Razgrad</option>
-        <option value="Ruse">Ruse</option>
-        <option value="Shumen">Shumen</option>
-        <option value="Silistra">Silistra</option>
-        <option value="Sliven">Sliven</option>
-        <option value="Smolyan">Smolyan</option>
-        <option value="Sofia">Sofia</option>
-        <option value="Stara Zagora">Stara Zagora</option>
-        <option value="Targovishte">Targovishte</option>
-        <option value="Varna">Varna</option>
-        <option value="Veliko Tarnovo">Veliko Tarnovo</option>
-        <option value="Vidin">Vidin</option>
-        <option value="Vratsa">Vratsa</option>
-        <option value="Yambol">Yambol</option>
-    </select>
-    <input id="myBtn" type="submit">
+  <label for="city">Choose a city:</label>
+  <select name="city_name" id="city" form="city_form">
+    <option value="" selected disabled hidden>Choose city</option>
+    <option value="Blagoevgrad">Blagoevgrad</option>
+    <option value="Burgas">Burgas</option>
+    <option value="Dobrich">Dobrich</option>
+    <option value="Gabrovo">Gabrovo</option>
+    <option value="Haskovo">Haskovo</option>
+    <option value="Kardzhali">Kardzhali</option>
+    <option value="Kyustendil">Kyustendil</option>
+    <option value="Lovech">Lovech</option>
+    <option value="Montana">Montana</option>
+    <option value="Pazardzhik">Pazardzhik</option>
+    <option value="Pernik">Pernik</option>
+    <option value="Pleven">Pleven</option>
+    <option value="Plovdiv">Plovdiv</option>
+    <option value="Razgrad">Razgrad</option>
+    <option value="Ruse">Ruse</option>
+    <option value="Shumen">Shumen</option>
+    <option value="Silistra">Silistra</option>
+    <option value="Sliven">Sliven</option>
+    <option value="Smolyan">Smolyan</option>
+    <option value="Sofia">Sofia</option>
+    <option value="Stara Zagora">Stara Zagora</option>
+    <option value="Targovishte">Targovishte</option>
+    <option value="Varna">Varna</option>
+    <option value="Veliko Tarnovo">Veliko Tarnovo</option>
+    <option value="Vidin">Vidin</option>
+    <option value="Vratsa">Vratsa</option>
+    <option value="Yambol">Yambol</option>
+  </select>
+  <input id="myBtn" type="submit"/>
 </form>
 
+<div id="weatherReport">
+</div>
+
 <script>
-    document.getElementById("myBtn").addEventListener("click", displayDate);
+  document.getElementById("myBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    const city = document.getElementById("city").value;
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let response = JSON.parse(this.responseText);
+        let weatherReport = document.getElementById("weatherReport");
+        weatherReport.innerHTML = `${Math.round(response.main.temp)}°C`;
+        let img = document.createElement("img");
+        img.src = `http://openweathermap.org/img/wn/${response.weather[0].icon}.png`;
+        weatherReport.appendChild(img);
+        let description = document.createElement("p");
+        description.innerText = response.weather[0].description;
+        weatherReport.appendChild(description);
+      }
+    };
+    xhttp.open("POST", `http://localhost/weather?city=${city}`, true);
+    xhttp.send();
+  });
 </script>
